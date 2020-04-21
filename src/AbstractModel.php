@@ -35,6 +35,8 @@ abstract class AbstractModel
                 $memberRet[$name] = $this->objSerialize($value);
             } else if (is_array($value)) {
                 $memberRet[$name] = $this->arraySerialize($value);
+            } else if (is_bool($value)) {
+                $memberRet[$name] = $value ? 'true':'false';
             } else {
                 $memberRet[$name] = $value;
             }
@@ -53,32 +55,14 @@ abstract class AbstractModel
                 $memberRet[$name] = $this->objSerialize($value);
             } elseif (is_array($value)) {
                 $memberRet[$name] = $this->arraySerialize($value);
-            }else {
+            } else if (is_bool($value)) {
+                $memberRet[$name] = $value ? 'true':'false';
+            } else {
                 $memberRet[$name] = $value;
             }
         }
         return $memberRet;
     }
-
-    /**
-     * 调用方法
-     * @return string GET OR POST
-     */
-    public function method()
-    {
-        return 'POST';
-    }
-
-    /**
-     * 是否需要签名
-     */
-    public function isSign()
-    {
-        return true;
-    }
-
-    // 接口请求地址
-    abstract public function path();
 
     abstract public function deserialize($param);
 

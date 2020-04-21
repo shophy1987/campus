@@ -4,7 +4,7 @@ namespace shophy\campus\models;
 
 use shophy\campus\AbstractRequest;
 
-class GetAccessTokenByCodeRequest extends AbstractRequest
+class RefreshAccessTokenRequest extends AbstractRequest
 {
     // Action
     public $Action='';
@@ -12,8 +12,8 @@ class GetAccessTokenByCodeRequest extends AbstractRequest
     public $SecretId='';
     // 创建应用时生成，注意保管，切勿泄漏
     public $SecretKey='';
-    // 前端传过来的Code ， 每个Code只能使用一次
-    public $UserCode;
+    // 用Code换的AccessToken
+    public $CurrentAccessToken;
 
     /**
      * 调用方法
@@ -46,8 +46,8 @@ class GetAccessTokenByCodeRequest extends AbstractRequest
         if ($param === null) {
             return;
         }
-        if (array_key_exists('UserCode', $param) && $param['UserCode'] !== null) {
-            $this->UserCode = $param['UserCode'];
+        if (array_key_exists('CurrentAccessToken', $param) && $param['CurrentAccessToken'] !== null) {
+            $this->CurrentAccessToken = $param['CurrentAccessToken'];
         }
     }
 }

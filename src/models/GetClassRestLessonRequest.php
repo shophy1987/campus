@@ -4,16 +4,14 @@ namespace shophy\campus\models;
 
 use shophy\campus\AbstractRequest;
 
-class GetAccessTokenByCodeRequest extends AbstractRequest
+class GetClassRestLessonRequest extends AbstractRequest
 {
     // Action
     public $Action='';
-    // 创建应用时生成的SecretId ， 用来标识密钥对
-    public $SecretId='';
-    // 创建应用时生成，注意保管，切勿泄漏
-    public $SecretKey='';
-    // 前端传过来的Code ， 每个Code只能使用一次
-    public $UserCode;
+    // 通过code换取的凭证AccessToken
+    public $AccessToken='';
+    // ClassId	int	是	班级组织架构ID		123
+    public $ClassId;
 
     /**
      * 调用方法
@@ -35,7 +33,7 @@ class GetAccessTokenByCodeRequest extends AbstractRequest
     // 接口请求地址
     public function path()
     {
-        return '/v2/openlogin';
+        return '/campus/education';
     }
 
     /**
@@ -46,8 +44,12 @@ class GetAccessTokenByCodeRequest extends AbstractRequest
         if ($param === null) {
             return;
         }
-        if (array_key_exists('UserCode', $param) && $param['UserCode'] !== null) {
-            $this->UserCode = $param['UserCode'];
+        if (array_key_exists('AccessToken', $param) && $param['AccessToken'] !== null) {
+            $this->AccessToken = $param['AccessToken'];
+        }
+
+        if (array_key_exists('ScheduleId', $param) && $param['ScheduleId'] !== null) {
+            $this->ScheduleId = $param['ScheduleId'];
         }
     }
 }

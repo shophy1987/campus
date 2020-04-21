@@ -10,11 +10,11 @@ use shophy\campus\exception\ApiException;
  * 智慧校园2.0 sdk基础类
  * @package shophy\campus
  */
-abstract class Campus
+class Campus
 {
     const API_PROTOCAL = 'https://';
     const API_DOMAIN = 'oapi.campus.qq.com';
-    const SUCCESS_OK = 'Ok';
+    const SUCCESS_OK = 'OK';
 
     public $orgId;
     private $appId;
@@ -67,11 +67,11 @@ abstract class Campus
             if ( !Utils::notEmptyStr($responseData))    throw new ApiException('empty response');
 
             $responseData = json_decode($responseData, true/*to array*/);
-            if ($responseData === false || (isset($responseData['ErrorCode']) && $responseData['ErrorCode'] != self::SUCCESS_OK)) {
+            if ($responseData === false || (isset($responseData['ErrorCode']) && strtoupper($responseData['ErrorCode']) != self::SUCCESS_OK)) {
                 throw new ApiException($responseData['ErrorCode'].':'.$responseData['ErrorMsg']);
             }
 
-            return $this->returnResponse($action, $responseData);
+            return $this->returnResponse($action, $responseData['Data'] ?? $responseData);
         } catch (\Exception $e) {
             if (!($e instanceof ApiException)) {
                 throw new ApiException($e->getMessage());
@@ -112,6 +112,8 @@ abstract class Campus
         array_key_exists('Action', $data) && $data['Action'] = ucfirst($action);
         array_key_exists('SecretId', $data) && $data['SecretId'] = $this->secretId;
         array_key_exists('SecretKey', $data) && $data['SecretKey'] = $this->secretKey;
+
+        return $data;
     }
 
     /**
@@ -127,14 +129,14 @@ abstract class Campus
         if ($request->isSign()) {
             $params['Action'] = ucfirst($action);
             $params['AppId'] = $this->appId;
-            $params['OrgId'] = $this->orgId;
+            $params['OrgId'] = $this->orgId ?? 0;
             $params['SecretId'] = $this->secretId;
             $params['Nonce'] = rand();
             $params['Timestamp'] = time();
             $params['Sign'] = $this->formatSignString($method, self::API_DOMAIN.$path, $params, json_encode($postData));
         }
 
-        return self::API_PROTOCAL.self::API_DOMAIN.$path.(empty($params) ? '' : http_build_query($params));
+        return self::API_PROTOCAL.self::API_DOMAIN.$path.(empty($params) ? '' : ('?'.http_build_query($params)));
     }
 
     private function formatSignString($method, $url, $params, $body)

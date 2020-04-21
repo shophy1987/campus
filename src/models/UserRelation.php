@@ -4,23 +4,25 @@ namespace shophy\campus\models;
 
 use shophy\campus\AbstractResponse;
 
-/**
- * Session请求参数结构体
- */
-class Session extends AbstractResponse
+class UserRelation extends AbstractResponse
 {
-    // 用户唯一id
+    // OpenUserId  string      用户全局唯一id    558dd3w6ww
     public $OpenUserId;
-    // UserName
-    public $UserName;
-    // 用户在一个学校的唯一id
+    // OrgUserId   string            58dd3w6ww
     public $OrgUserId;
-    // 角色id
+    // RoleId      int   角色id  
     public $RoleId;
-    // 学校id
-    public $OrgId;
-    // 扩展字段
-    public $ExtData;
+    // Name  string      用户名   张三
+    public $Name;
+    // Relation    int   用户关系  1
+    // 1	爸爸
+    // 2	妈妈
+    // 3	爷爷
+    // 4	奶奶
+    // 5	姥姥
+    // 6	姥爷
+    // 7	家长
+    public $Relation;
 
     /**
      * For internal only. DO NOT USE IT.
@@ -34,10 +36,6 @@ class Session extends AbstractResponse
             $this->OpenUserId = $param['OpenUserId'];
         }
 
-        if (array_key_exists('UserName', $param) && $param['UserName'] !== null) {
-            $this->UserName = $param['UserName'];
-        }
-
         if (array_key_exists('OrgUserId', $param) && $param['OrgUserId'] !== null) {
             $this->OrgUserId = $param['OrgUserId'];
         }
@@ -46,13 +44,12 @@ class Session extends AbstractResponse
             $this->RoleId = $param['RoleId'];
         }
 
-        if (array_key_exists('OrgId', $param) && $param['OrgId'] !== null) {
-            $this->OrgId = $param['OrgId'];
+        if (array_key_exists('Name', $param) && $param['Name'] !== null) {
+            $this->Name = $param['Name'];
         }
 
-        if (array_key_exists('ExtData', $param) && $param['ExtData'] !== null) {
-            $this->ExtData = new ExtData();
-            $this->ExtData->deserialize($param['ExtData']);
+        if (array_key_exists('Relation', $param) && $param['Relation'] !== null) {
+            $this->Relation = $param['Relation'];
         }
     }
 }

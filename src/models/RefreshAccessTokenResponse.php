@@ -4,14 +4,12 @@ namespace shophy\campus\models;
 
 use shophy\campus\AbstractResponse;
 
-class GetAccessTokenByCodeResponse extends AbstractResponse
+class RefreshAccessTokenResponse extends AbstractResponse
 {
     // AccessToken
     public $AccessToken;
     // Token过期时间(秒)
     public $ExpireIn;
-    // 当前登陆用户Session信息
-    public $Session;
 
     /**
      * For internal only. DO NOT USE IT.
@@ -27,11 +25,6 @@ class GetAccessTokenByCodeResponse extends AbstractResponse
 
         if (array_key_exists('ExpireIn', $param) && $param['ExpireIn'] !== null) {
             $this->ExpireIn = $param['ExpireIn'];
-        }
-
-        if (array_key_exists('Session', $param) && $param['Session'] !== null) {
-            $this->Session = new Session();
-            $this->Session->deserialize($param['Session']);
         }
     }
 }
