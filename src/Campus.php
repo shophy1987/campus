@@ -26,13 +26,14 @@ class Campus
      * @param string $secretId
      * @param string $secretKey
      */
-    function __construct($appId, $secretId, $secretKey)
+    function __construct($appId, $secretId, $secretKey, $orgId=0)
     {
         Utils::checkNotEmptyStr($appId, "appId");
         Utils::checkNotEmptyStr($secretId, "secretId");
         Utils::checkNotEmptyStr($secretKey, "secretKey");
 
         $this->appId = $appId;
+        $this->orgId = $orgId;
         $this->secretId = $secretId;
         $this->secretKey = $secretKey;
     }
@@ -133,14 +134,15 @@ class Campus
             $params['SecretId'] = $this->secretId;
             $params['Nonce'] = rand();
             $params['Timestamp'] = time();
-            $params['Sign'] = $this->formatSignString($method, self::API_DOMAIN.$path, $params, json_encode($postData));
+            $params['Sign'] = self::signRequestData($this->secretKey, $method, self::API_DOMAIN.$path, $params, json_encode($postData));
         }
 
         return self::API_PROTOCAL.self::API_DOMAIN.$path.(empty($params) ? '' : ('?'.http_build_query($params)));
     }
 
-    private function formatSignString($method, $url, $params, $body)
+    public static function signRequestData($secretKey, $method, $url, $params, $body)
     {
+        Utils::checkNotEmptyStr($secretKey, "secretKey");
         if (!is_string($body))  throw new ParameterException('sign body must be an string');
         if (!is_array($params)) throw new ParameterException('sign params must be an array');
 
@@ -154,7 +156,7 @@ class Campus
         }
         
         // 2. hmac_sha1 签名
-        $key = utf8_encode($this->secretKey);
+        $key = utf8_encode($secretKey);
         $msg = utf8_encode($rawStr);
 
         // 16 进制字符串
