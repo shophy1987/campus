@@ -84,6 +84,13 @@ class HttpUtils
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POST, true);
+		if (is_array($postData)) {
+			$postData = json_encode($postData, JSON_UNESCAPED_UNICODE);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, [
+				'Content-Type: application/json',
+				'Content-Length: ' . strlen($postData)
+			]);
+		}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 		
 		return self::__exec($ch);
