@@ -134,7 +134,8 @@ class Campus
             $params['SecretId'] = $this->secretId;
             $params['Nonce'] = rand();
             $params['Timestamp'] = time();
-            $params['Sign'] = self::signRequestData($this->secretKey, $method, self::API_DOMAIN.$path, $params, json_encode($postData));
+
+            $params['Sign'] = self::signRequestData($this->secretKey, $method, self::API_DOMAIN.$path, $params, json_encode($postData, JSON_UNESCAPED_UNICODE));
         }
 
         return self::API_PROTOCAL.self::API_DOMAIN.$path.(empty($params) ? '' : ('?'.http_build_query($params)));
@@ -156,8 +157,9 @@ class Campus
         }
         
         // 2. hmac_sha1 签名
-        $key = utf8_encode($secretKey);
-        $msg = utf8_encode($rawStr);
+        // 有中文的情况utf8_encode返回的内容有误
+        $key = $secretKey;// utf8_encode($secretKey);
+        $msg = $rawStr;//utf8_encode($rawStr);
 
         // 16 进制字符串
         $b16encoded = hash_hmac("sha1", $msg, $key, false);
